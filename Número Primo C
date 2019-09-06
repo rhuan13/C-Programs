@@ -1,0 +1,21 @@
+
+#include <stdio.h>
+//n /2 == 0 primo
+// n/2 != 0 não é primo
+int n;
+int main()
+{
+    printf("\n Digite um número ",n);
+    scanf("%d",&n);
+    if(n%2 == 0)
+    {
+        printf("\n É um número primo %d",n);
+       
+    }
+    else{
+        printf("\n Não é primo %d",n);
+    }
+   
+   
+return 0;
+}
