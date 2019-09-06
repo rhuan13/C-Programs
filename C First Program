@@ -1,0 +1,27 @@
+#include <stdio.h>
+
+int main()
+
+{
+int i,x,y,z,restx,resty,restz,n;
+while (i !=0)
+{
+    x =n/3;
+    restx = n%3;
+    y = n/5;
+    resty=n%5;
+    z= n/7;
+    restz =n%7;
+    if (x >=1 && restx==2 && y>=1 && resty==3 && z>=1 && restz==4 )
+    {
+        printf("O numero desejado é: %d!resto  de x =%d! resto de y =%d! resto de z = %d!,",n,restx,resty,restz);
+        i = 0;
+    }
+    else{
+        i = i +1;
+    }    
+    n = n+1;
+}
+
+return 0;
+}
