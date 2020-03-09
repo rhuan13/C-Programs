@@ -1,0 +1,183 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct no
+{
+	struct no *ant,*prox;
+	char pal [20];
+	int ocorrencia;
+};
+
+struct no *corrente,*aux,*primeiro;
+
+void gerador()
+{
+	FILE *arquivo;
+	arquivo=fopen("entrada.txt","r");
+	char buffer;int cont=0;
+	
+	if(arquivo==NULL)
+	{
+		puts("Erro ao abrir o arquivo!");
+		exit (1);
+	}
+	corrente=aux=primeiro=NULL;
+	corrente=(struct no*) malloc(sizeof(struct no));
+	aux=corrente;primeiro=corrente;
+	corrente->ant=corrente->prox=NULL;
+	
+	while ((buffer=fgetc(arquivo))!=EOF)
+	{
+		if ((buffer!=32) && (buffer!='?') && (buffer!='.') && (buffer!=',') && (buffer!='!'))
+		{
+			corrente->pal[cont]=buffer;
+			cont++;
+		}
+		else
+		{
+			for (;cont<=20;cont++)
+			{
+				corrente->pal[cont]='\000';
+			}
+			corrente->ocorrencia=1;
+			
+			while(aux->prox!=NULL)
+			{
+				if ((strncmp(corrente->pal,aux->pal,cont) == 0 ) && (corrente!=aux))
+				{			
+					aux->ocorrencia=aux->ocorrencia+1;
+					aux=corrente->ant;
+					aux->prox=NULL;
+					free(corrente);
+					break;
+			}
+				else
+				{
+					aux=aux->prox;
+				}
+			}
+		
+			corrente=(struct no*) malloc(sizeof(struct no));
+			corrente->ant=aux;corrente->prox=NULL;
+			aux->prox=corrente;
+			aux=primeiro;cont=0;
+		}
+	}
+	for (;cont<=20;cont++)
+	{
+		corrente->pal[cont]='\000';
+	}
+	corrente->ocorrencia=1;
+
+	
+	while(aux->prox!=NULL)
+	{
+		if ((strcmp(corrente->pal,aux->pal,cont) == 0 ) && (corrente!=aux))
+		{
+			aux->ocorrencia=aux->ocorrencia+1;
+			aux=corrente->ant;
+			aux->prox=NULL;
+			free(corrente);
+			
+			while (aux->prox!=NULL)
+			{
+				aux=aux->prox;
+			}
+			break;
+		}
+		else
+		{
+			aux=aux->prox;
+		}
+	}
+	aux=primeiro;fclose(arquivo);
+
+	aux=primeiro;	
+	arquivo=fopen("dicionario.txt","w");
+	
+	if(arquivo==NULL)
+	{
+		puts("Erro ao abrir o arquivo!");
+		exit (1);
+	}
+	
+	while (aux!=NULL)
+	{
+		fprintf(arquivo,"%s:\t",aux->pal);
+		fprintf(arquivo,"%d\n",aux->ocorrencia);
+		aux=aux->prox;
+	}
+	fclose(arquivo);
+	aux=primeiro;
+	
+	while (aux->prox!=NULL)
+	{
+		aux=aux->prox;
+		free(aux->ant);
+	}
+	free(aux);
+}
+
+void exibir_original()
+{
+	char buffer,texto[15];int cont=0;
+    
+    printf("\nDigite o nome do arquivo de entrada: ");
+    scanf("%s", texto);
+    strcat(texto, ".txt");
+	
+	FILE *arquivo;
+	arquivo=fopen(texto,"r");
+	
+	if(arquivo==NULL)
+	{
+		puts("Erro ao abrir o arquivo! Tente outro!");
+		exit (1);
+	}
+	
+	printf("O texto do arquivo original e':\n");
+	while ((buffer=fgetc(arquivo))!=EOF)
+	{
+		printf("%c",buffer);
+	}
+}
+
+exibir_dicionario()
+{
+	FILE *arquivo;
+	arquivo=fopen("dicionario.txt","r");
+	char buffer;int cont=0;
+	
+	if(arquivo==NULL)
+	{
+		puts("Erro ao abrir o arquivo!");
+		exit (1);
+	}
+	
+	printf("O texto do arquivo dicionario e':\n");
+	while ((buffer=fgetc(arquivo))!=EOF)
+	{
+		printf("%c",buffer);
+	}
+}
+
+void main() 
+{
+	int decisao=1;
+	while(decisao!=0)
+	{
+		printf("\n\nPROGRAMA CONTADOR DE PALAVRAS\n\n");
+    	printf("Digite 0 para encerrar o programa\n");
+    	printf("Digite 1 para gerar um dicionario de repeticao\n");
+    	printf("Digite 2 para exibir o texto de origem\n");
+    	printf("Digite 3 para exibir o dicionario de repeticao\n");
+    	scanf("%d", &decisao);
+    	switch(decisao) 
+		{
+        	case 1: gerador(); break;
+        	case 2: exibir_original(); break; 
+			case 3: exibir_dicionario(); break;  
+    	};
+	}
+    
+}
